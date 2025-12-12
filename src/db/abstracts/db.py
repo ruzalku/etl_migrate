@@ -6,18 +6,22 @@ from typing import TypeVar, Generic
 T = TypeVar('T')
 
 
-class DB(ABC, Generic[T]):
+class AbstractStorage(ABC, Generic[T]):
     def __init__(self, client: T):
         self.client = client
 
     @abstractmethod
-    def get_objs(self, index):
+    async def get_objs(self, index):
         pass
 
     @abstractmethod
-    def save_objs(self, objs, index):
+    async def save_objs(self, objs, index):
         pass
 
     @abstractmethod
-    def create_index(self, index, mapping):
+    async def create_index(self, index, mapping):
+        pass
+
+    @abstractmethod
+    async def create_mapping(self, index):
         pass
