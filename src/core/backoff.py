@@ -11,7 +11,7 @@ def backoff(
     jitter: float = 0.1
 ):
     def wrapper(func):
-        @wraps
+        @wraps(func)
         async def inner(*args, **kwargs):
             current_delay = start_delay
             counter = 0

@@ -35,14 +35,14 @@ class PostgreStorage(AbstractStorage[AsyncConnection]):
 
         return DataExtractor.extract_mapping(data)
     
-    @backoff
+    @backoff()
     async def get_objs(self, index):
         return await super().get_objs(index)
     
-    @backoff
+    @backoff()
     async def save_objs(self, objs, index):
         return await super().save_objs(objs, index)
     
-    @backoff
+    @backoff()
     async def create_index(self, index, mapping):
         return await super().create_index(index, mapping)
