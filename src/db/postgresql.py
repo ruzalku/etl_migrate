@@ -1,9 +1,11 @@
 from ..db.abstracts.db import AbstractStorage
 from psycopg import AsyncConnection
 from ..service.extractor import DataExtractor
+from ..core.backoff import backoff
 
 
 class PostgreStorage(AbstractStorage[AsyncConnection]):
+    @backoff()
     async def create_mapping(self, indexes: tuple):
         async with self.client:
             async with self.client.cursor() as cursor:
@@ -33,11 +35,14 @@ class PostgreStorage(AbstractStorage[AsyncConnection]):
 
         return DataExtractor.extract_mapping(data)
     
+    @backoff
     async def get_objs(self, index):
         return await super().get_objs(index)
     
+    @backoff
     async def save_objs(self, objs, index):
         return await super().save_objs(objs, index)
     
+    @backoff
     async def create_index(self, index, mapping):
         return await super().create_index(index, mapping)
