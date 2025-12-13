@@ -19,19 +19,9 @@ class AbstractStorage(ABC, Generic[T]):
         pass
 
     @abstractmethod
-    async def create_index(self, index, mapping) -> None:
+    async def create_index(self, index: str, mapping) -> None:
         pass
 
     @abstractmethod
-    async def create_mapping(self, index: str) -> dict:
-        # Должен вернуть словарь вида:
-        # mapping = {
-        #   "table_name": {
-        #       "column1": {
-        #           "data_type": "integer",
-        #           "is_primary": True
-        #       },
-        #       ....
-        #   }
-        # }
+    async def create_mapping(self, indexes: list) -> dict:
         pass

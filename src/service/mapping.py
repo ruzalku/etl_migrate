@@ -7,13 +7,11 @@ class Mapping:
         self.file_path = file_path
         self.storage = storage
 
-    def save_json_mapping(self, index: str):
-        mapping_add = self.storage.create_mapping(index)
-        old_mapping = self.get_json_mapping()
-        old_mapping[index] = mapping_add[index]
+    async def save_json_mapping(self, indexes: tuple):
+        mapping = await self.storage.create_mapping(indexes)
 
         with open(self.file_path, 'w', encoding='utf-8') as file:
-            json.dump(old_mapping, file, ensure_ascii=False, indent=2)
+            json.dump(mapping, file, ensure_ascii=False, indent=2)
 
     def get_json_mapping(self):
         try:
