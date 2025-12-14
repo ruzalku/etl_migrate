@@ -19,9 +19,5 @@ class AbstractStorage(ABC, Generic[T]):
         pass
 
     @abstractmethod
-    async def create_index(self, index: str, mapping) -> None:
-        pass
-
-    @abstractmethod
     async def create_mapping(self, indexes: list) -> dict:
         pass
