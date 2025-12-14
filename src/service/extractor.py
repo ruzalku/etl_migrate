@@ -1,11 +1,21 @@
-class DataExtractor:
-    def get_index_mapping(self, index):
-        # TODO: Сделать получение данных о mapping-е
-        pass
+from ..service.mapping import Mapping
 
-    def extract_data(self, data, index):
-        # TODO: Сделать преобразование данных на основе mapping-а
-        pass
+
+class DataExtractor:
+    @staticmethod
+    def extract_data(data, index, file_path):
+        mapping = Mapping(file_path=file_path)
+
+        columns = mapping.get_json_mapping().get(index, {})
+        new_data = []
+        for i in data:
+            row = {}
+            for column, col_data in columns.items():
+                row[col_data['new_column_name']] = i[column]
+
+            new_data.append(row)
+        
+        return new_data
 
     @staticmethod
     def extract_mapping(mapping: list[dict]):
@@ -21,6 +31,7 @@ class DataExtractor:
             new_mapping[table_name][column_name] = {
                 'data_type': column.get('data_type'),
                 'constraint_type': column.get('constraint_type'),
+                'new_column_name': column_name
             }
 
         return new_mapping

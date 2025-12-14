@@ -3,12 +3,11 @@ import json
 
 
 class Mapping:
-    def __init__(self, file_path: str, storage: AbstractStorage):
+    def __init__(self, file_path: str):
         self.file_path = file_path
-        self.storage = storage
 
-    async def save_json_mapping(self, indexes: tuple):
-        mapping = await self.storage.create_mapping(indexes)
+    async def save_json_mapping(self, indexes: tuple, storage: AbstractStorage):
+        mapping = await storage.create_mapping(indexes)
 
         with open(self.file_path, 'w', encoding='utf-8') as file:
             json.dump(mapping, file, ensure_ascii=False, indent=2)

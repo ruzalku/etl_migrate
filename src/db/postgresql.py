@@ -70,6 +70,7 @@ class PostgreStorage(AbstractStorage[AsyncConnection]):
                 async with cursor.copy(copy_sql) as copy:
                         for row in objs:
                             await copy.write_row([row[c] for c in columns])
+            await self.client.commit()
         except UndefinedColumn as es:
             await self.client.rollback()
             logger.error(
