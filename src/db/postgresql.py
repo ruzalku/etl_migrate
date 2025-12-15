@@ -57,19 +57,20 @@ class PostgreStorage(AbstractStorage[AsyncConnection]):
                 yield rows
     
     @backoff()
-    async def save_objs(self, objs: list[dict], index: str):
+    async def save_objs(self, objs: list[dict]):
         if not objs:
-            logger.warning(f'Index: {index} is null')
+            logger.warning(f'Index is null')
             return
 
-        columns = list(objs[0].keys())
+        columns = columns = [c for c in objs[0].keys() if c != "new_table_name"]
         cols_sql = ', '.join(columns)
-        copy_sql = f'COPY {index} ({cols_sql}) FROM STDIN;'
+        copy_sql = f'COPY {objs[0].get("new_table_name")} ({cols_sql}) FROM STDIN;'
         try:
             async with self.client.cursor() as cursor:
                 async with cursor.copy(copy_sql) as copy:
                         for row in objs:
                             await copy.write_row([row[c] for c in columns])
+
             await self.client.commit()
         except UndefinedColumn as es:
             await self.client.rollback()
@@ -78,4 +79,4 @@ class PostgreStorage(AbstractStorage[AsyncConnection]):
             )
             return
 
-        logger.info(f'Index: {index} is saved')
+        logger.info(f'Index: {objs[0].get("new_table_name")} is saved')

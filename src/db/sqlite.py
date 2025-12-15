@@ -10,15 +10,15 @@ logger = logging.getLogger(__name__)
 
 
 class SQLiteStorage(AbstractStorage[AsyncConnection]):
-    async def save_objs(self, objs: list[dict], index: str):
+    async def save_objs(self, objs: list[dict]):
         if not objs:
-            logger.warning(f"Index {index} is null")
+            logger.warning(f"Index is null")
             return
 
-        columns = list(objs[0].keys())
+        columns = [c for c in objs[0].keys() if c != "new_table_name"]
         cols_sql = ", ".join(columns)
         placeholders = ", ".join(["?"] * len(columns))
-        sql = f"INSERT INTO {index} ({cols_sql}) VALUES ({placeholders})"
+        sql = f"INSERT INTO {objs[0]['new_table_name']} ({cols_sql}) VALUES ({placeholders})"
 
         values = [tuple(row[c] for c in columns) for row in objs]
         await self.client.executemany(sql, values)
@@ -26,7 +26,7 @@ class SQLiteStorage(AbstractStorage[AsyncConnection]):
 
     
     async def get_objs(self, index, batch: int):
-        return await self._get_objs_from_stream(index, batch)
+        return self._get_objs_from_stream(index, batch)
     
     async def _get_objs_from_stream(self, index: str, batch: int):
         async with self.client.execute(f"SELECT * FROM {index};") as cursor:
