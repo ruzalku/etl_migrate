@@ -63,8 +63,8 @@ class PostgreStorage(AbstractStorage[AsyncConnection]):
             return
 
         columns = list(objs[0].keys())
-        cols_sql = ", ".join(columns)
-        copy_sql = f"COPY {index} ({cols_sql}) FROM STDIN"
+        cols_sql = ', '.join(columns)
+        copy_sql = f'COPY {index} ({cols_sql}) FROM STDIN;'
         try:
             async with self.client.cursor() as cursor:
                 async with cursor.copy(copy_sql) as copy:

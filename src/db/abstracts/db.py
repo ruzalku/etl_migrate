@@ -11,11 +11,11 @@ class AbstractStorage(ABC, Generic[T]):
         self.client = client
 
     @abstractmethod
-    async def get_objs(self, index) -> list:
+    async def get_objs(self, index: str, batch: int) -> list:
         pass
 
     @abstractmethod
-    async def save_objs(self, objs, index) -> None:
+    async def save_objs(self, objs: list[dict], index: str) -> None:
         pass
 
     @abstractmethod
